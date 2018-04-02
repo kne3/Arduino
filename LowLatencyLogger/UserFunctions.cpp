@@ -13,7 +13,7 @@ Adafruit_ADS1115 ads1115(0x48); // construct an ads1115 at address 0x48
 // Start time for data
 static uint32_t startMicros;
 void startADC(){
-ads1115.setGain(GAIN_SIXTEEN);  // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
+ads1115.setGain(GAIN_ONE);  // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
 ads1115.begin();
 }
 
