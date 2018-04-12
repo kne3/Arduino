@@ -21,6 +21,7 @@
 #include <SPI.h>
 #include <Wire.h> 
 #include <Adafruit_ADS1015.h>
+#include <SD.h>
 
 
 
@@ -37,6 +38,9 @@ Adafruit_TLC59711 tlc = Adafruit_TLC59711(NUM_TLC59711, clock, data);
 int val = 0; //value for storing moisture value 
 int soilPin = A0;//Declare a variable for the soil moisture sensor 
 int soilPower = 7;//Variable for Soil moisture Power
+File file;
+int count=0;
+
 
 //Rather than powering the sensor through the 3.3V or 5V pins, 
 //we'll use a digital pin to power the sensor. This will 
@@ -46,6 +50,7 @@ void setup() {
 //BLUE WIRE FOR PD GOES TO NOTCH
 //GREEN WIRE FOR LED GOES TO NOTCH
 Serial.begin(9600);
+SD.begin(10);
 //Soil Moisture Stuff
  pinMode(soilPower, OUTPUT);//Set D7 as an OUTPUT
   digitalWrite(soilPower, LOW);//Set to LOW so no power is flowing through the sensor
@@ -66,51 +71,47 @@ tlc.begin();
 tlc.write();
 colorWipe(0, 65535, 0, 100); // "Green" (depending on your LED wiring)
 
+//sd stuff
+Serial.println("SD creating test");
+file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
+SD.remove("WR_TEST5.TXT");
+file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
+Serial.println("SD created test");
 }
 
 void loop() {
 
 //Saltwater switch check
 unsigned long strt = micros();
-int soilVal=readSoil();
+//int soilVal=readSoil();
 //Serial.println(soilVal);
 
 //If in water, do all the driver/reading
 //if(soilVal>300){
 //For testing just run this branch regardless of the soil reading
-if(true){
+while(count<520){
+ unsigned long strt = micros();
+ int soilVal=readSoil();
 //Driver Stuff
 //colorWipe(0, 65535, 0, 100); // "Green" (depending on your LED wiring)
 
 //ADC Stuff
-//int16_t results2;
-
-
 int16_t results3=ads1115.readADC_Differential_0_1();
-unsigned long nd = micros() -strt;
-//int16_t results=ads1115.mainStruct.firstVar;
-//int16_t results2=ads1115.mainStruct.secondVar;
-//printf(“mainStruct.firstVar = %u | mainStruct.secondVar = %u.\n”, mainStruct.firstVar, mainStruct.secondVar);
-//int16_t results1=results.mres1;
-//int16_t results2=results.mres2;
-//results2 = ads1115.readADC_Differential_2_3();
-//float conversion3=results3*(.125E-3);
-//float conversion=results*(.0078125E-3);
 float conversion3=results3*(.0078125E-3);
-//float conversion3=results3*(.03125E-3);
-//Serial.print("Differential test: "); 
+file.println(conversion3,6);
+unsigned long nd = micros() -strt;
+Serial.println(results3,6); //Serial.print("("); 
 Serial.println(conversion3,6); //Serial.print("("); 
-//Serial.print("First Diff: ");
-//Serial.println(conversion,6); 
-//Serial.print("Second Diff: ");  Serial.print(conversion2,6);
-//Serial.print("Time: ");Serial.println(nd);
-unsigned long ndprint = micros() -strt;
-//Serial.print("Time with prints: ");Serial.println(ndprint);
-delay(100);
+Serial.print("Time: ");Serial.println(nd);
+count++;
+
 }
-else{
-  Serial.println("Out of water");
-}
+   file.flush();  
+ file.close();
+//else{
+//  Serial.println("Out of water");
+
+//}
 }
 
 
