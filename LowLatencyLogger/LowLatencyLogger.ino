@@ -645,14 +645,9 @@ colorWipe(0, 65535, 0, 100); // "Green" (depending on your LED wiring)
   // recover existing tmp file.
   if (sd.exists(TMP_FILE_NAME)) {
     Serial.println(F("\nType 'Y' to recover existing tmp file " TMP_FILE_NAME));
-    while (!Serial.available()) {
-      SysCall::yield();
-    }
-    if (Serial.read() == 'Y') {
+  
       recoverTmpFile();
-    } else {
-      error("'Y' not typed, please manually delete " TMP_FILE_NAME);
-    }
+   
   }
 }
 //------------------------------------------------------------------------------
@@ -661,13 +656,18 @@ void loop(void) {
   Serial.println("Waiting 5 seconds before starting");
    delay(5000);
     int soilValinit=readSoil();
- // if (soilValinit>300){
-    if (counter2<1){
+    Serial.println(counter2);
+    Serial.println(soilValinit);
+  if (soilValinit>700&&counter2<1){
+   // if (counter2<1){
       logData();
       binaryToCsv();
       counter2++;
-  }else{
+  }else if (soilValinit<700&&counter2>=1){
     Serial.println("DONE");
+  }
+  else{
+    Serial.println("Waiting for water");
   }
   // Read any Serial data.
  /* do {
@@ -691,12 +691,10 @@ void loop(void) {
 #endif
   
   char c = tolower(Serial.read());
-
   // Discard extra Serial data.
   do {
     delay(10);
   } while (Serial.available() && Serial.read() >= 0);
-
   if (ERROR_LED_PIN >= 0) {
     digitalWrite(ERROR_LED_PIN, LOW);
   }

@@ -54,7 +54,7 @@ Serial.begin(9600);
 Serial.println("Getting differential reading from AIN0 (P) and AIN1 (N)");
 Serial.println("ADC Range: +/- 6.144V (1 bit = 188uV)");
 Serial.println(" 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV");
-ads1115.setGain(GAIN_ONE);  // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
+ads1115.setGain(GAIN_SIXTEEN);  // 16x gain  +/- 0.256V  1 bit = 0.125mV  0.0078125mV
 ads1115.begin();
 
 
@@ -99,7 +99,7 @@ unsigned long nd = micros() -strt;
 float conversion3=results3*(.0078125E-3);
 //float conversion3=results3*(.03125E-3);
 //Serial.print("Differential test: "); 
-Serial.println(results3,6); //Serial.print("("); 
+Serial.println(conversion3,6); //Serial.print("("); 
 //Serial.print("First Diff: ");
 //Serial.println(conversion,6); 
 //Serial.print("Second Diff: ");  Serial.print(conversion2,6);
