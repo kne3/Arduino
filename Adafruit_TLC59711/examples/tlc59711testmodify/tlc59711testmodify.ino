@@ -51,7 +51,8 @@ void setup() {
 //BLUE WIRE FOR PD GOES TO NOTCH
 //GREEN WIRE FOR LED GOES TO NOTCH
 Serial.begin(9600);
-SD.begin(10);
+
+
 //Soil Moisture Stuff
  pinMode(soilPower, OUTPUT);//Set D7 as an OUTPUT
   digitalWrite(soilPower, LOW);//Set to LOW so no power is flowing through the sensor
@@ -71,8 +72,9 @@ pinMode(10, OUTPUT);
 tlc.begin();
 tlc.write();
 colorWipe(0, 65535, 0, 100); // "Green" (depending on your LED wiring)
-
+delay(5000);
 //sd stuff
+SD.begin(10);
 Serial.println("SD creating test");
 file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
 SD.remove("WR_TEST5.TXT");
@@ -118,6 +120,8 @@ count++;
 }
    file.flush();  
  file.close();
+ colorWipe(0, 0, 0, 100); // "Green" (depending on your LED wiring)
+ digitalWrite(ledPin, LOW);
 //else{
 //  Serial.println("Out of water");
 
