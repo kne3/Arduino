@@ -40,6 +40,7 @@ int soilPin = A0;//Declare a variable for the soil moisture sensor
 int soilPower = 7;//Variable for Soil moisture Power
 File file;
 int count=0;
+int ledPin = 5;
 
 
 //Rather than powering the sensor through the 3.3V or 5V pins, 
@@ -77,6 +78,9 @@ file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
 SD.remove("WR_TEST5.TXT");
 file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
 Serial.println("SD created test");
+
+//LED stuff
+pinMode(ledPin, OUTPUT);
 }
 
 void loop() {
@@ -99,6 +103,12 @@ while(count<520){
 int16_t results3=ads1115.readADC_Differential_0_1();
 float conversion3=results3*(.0078125E-3);
 file.println(conversion3,6);
+if (conversion3>=.25&&digitalRead(ledPin == LOW)){
+    digitalWrite(ledPin, HIGH);
+}
+else if (conversion3<.25&&digitalRead(ledPin == HIGH)){
+  digitalWrite(ledPin, LOW);
+}
 unsigned long nd = micros() -strt;
 Serial.println(results3,6); //Serial.print("("); 
 Serial.println(conversion3,6); //Serial.print("("); 
