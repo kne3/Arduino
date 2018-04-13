@@ -1,16 +1,12 @@
 /*************************************************** 
   This is an example for our Adafruit 12-channel PWM/LED driver
-
   Pick one up today in the adafruit shop!
   ------> http://www.adafruit.com/products/
-
   These drivers uses SPI to communicate, 2 pins are required to  
   interface: Data and Clock. The boards are chainable
-
   Adafruit invests time and resources providing this open source code, 
   please support Adafruit and open-source hardware by purchasing 
   products from Adafruit!
-
   Written by Limor Fried/Ladyada for Adafruit Industries.  
   BSD license, all text above must be included in any redistribution
  ****************************************************/
@@ -41,6 +37,7 @@ int soilPower = 7;//Variable for Soil moisture Power
 File file;
 int count=0;
 int ledPin = 5;
+boolean donevar=false;
 
 
 //Rather than powering the sensor through the 3.3V or 5V pins, 
@@ -77,9 +74,9 @@ delay(5000);
 SD.begin(10);
 Serial.println("SD creating test");
 file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
-SD.remove("WR_TEST5.TXT");
-file = SD.open("WR_TEST5.TXT", O_CREAT | O_WRITE);
-Serial.println("SD created test");
+
+
+Serial.println("SD created testWoot");
 
 //LED stuff
 pinMode(ledPin, OUTPUT);
@@ -90,14 +87,18 @@ void loop() {
 //Saltwater switch check
 unsigned long strt = micros();
 //int soilVal=readSoil();
-//Serial.println(soilVal);
 
+ int soilVal=readSoil();
+ Serial.println(soilVal);
 //If in water, do all the driver/reading
 //if(soilVal>300){
 //For testing just run this branch regardless of the soil reading
-while(count<520){
+if(soilVal>750&&count<520&&donevar==false){
+//  if count==0{
+//    file.println("NEW TEST");
+//  }
  unsigned long strt = micros();
- int soilVal=readSoil();
+ //int soilVal=readSoil();
 //Driver Stuff
 //colorWipe(0, 65535, 0, 100); // "Green" (depending on your LED wiring)
 
@@ -118,10 +119,18 @@ Serial.print("Time: ");Serial.println(nd);
 count++;
 
 }
+else if(soilVal<750&&count==0){
+  Serial.println("Waiting for water");
+}
+else{
+  donevar=true;
+  
    file.flush();  
  file.close();
  colorWipe(0, 0, 0, 100); // "Green" (depending on your LED wiring)
  digitalWrite(ledPin, LOW);
+   Serial.println("DONE");
+}
 //else{
 //  Serial.println("Out of water");
 
@@ -148,5 +157,3 @@ int readSoil()
     digitalWrite(soilPower, LOW);//turn D7 "Off"
     return val;//send current moisture value
 }
-
-
