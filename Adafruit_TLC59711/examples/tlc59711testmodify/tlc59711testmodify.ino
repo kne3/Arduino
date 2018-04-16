@@ -93,7 +93,7 @@ unsigned long strt = micros();
 //If in water, do all the driver/reading
 //if(soilVal>300){
 //For testing just run this branch regardless of the soil reading
-if(soilVal>750&&count<520&&donevar==false){
+if(soilVal>750&&count<520){
 //  if count==0{
 //    file.println("NEW TEST");
 //  }
@@ -123,7 +123,6 @@ else if(soilVal<750&&count==0){
   Serial.println("Waiting for water");
 }
 else{
-  donevar=true;
   
    file.flush();  
  file.close();
