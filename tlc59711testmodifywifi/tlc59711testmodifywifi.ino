@@ -96,6 +96,8 @@ file = SD.open("WR_TEST1.TXT", O_CREAT | O_WRITE);
 
 //LED stuff
 pinMode(ledPin, OUTPUT);
+pinMode(9, OUTPUT);
+
 }
 
 void loop() {
@@ -109,7 +111,7 @@ void loop() {
 //If in water, do all the driver/reading
 //if(soilVal>300){
 //For testing just run this branch regardless of the soil reading
-if(soilVal>750&&count<520&&donevar==false){
+if(soilVal>800&&count<=152000&&donevar==false){
 //  if count==0{
 //    file.println("NEW TEST");
 //  }
@@ -130,14 +132,21 @@ else if (conversion3<.25&&digitalRead(ledPin == HIGH)){
   digitalWrite(ledPin, LOW);
 }
 
+if (conversion3<=.1&&digitalRead(9 == LOW)){
+    digitalWrite(9, HIGH);
+}
+else if (conversion3>.1&&digitalRead(9 == HIGH)){
+  digitalWrite(9, LOW);
+}
+
 //Serial.println(results3,6); //Serial.print("("); 
-//Serial.println(conversion3,6); //Serial.print("("); 
+Serial.println(conversion3,6); //Serial.print("("); 
 //Serial.print("Time: ");Serial.println(nd);
 count++;
 
 }
-else if(soilVal<750&&count==0){
-  //Serial.println("Waiting for water");
+else if((soilVal<800&&count==0)||(count>152000&&soilVal>=800)){
+  Serial.println(F("Waiting"));
 }
 else{
   donevar=true;
@@ -146,6 +155,7 @@ else{
  file.close();
  //colorWipe(0, 0, 0, 100); // "Green" (depending on your LED wiring)
  digitalWrite(ledPin, LOW);
+  digitalWrite(9, LOW);
  //Serial.println("DONE");
  
  // Connect
